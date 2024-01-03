@@ -1,8 +1,11 @@
 #!/bin/bash
 
+source_dir="/var/mobile/Containers/Data/Application/EEF046E5-C9AA-426A-B9F0-13BAB981B259/Documents/Inbox"
+# dest directory = current directory !!!
+
 while true; do
   # Add number and move files to final dir
-  for file in temp/*; do
+  for file in "$source_dir"/*; do
     if [ -f "$file" ]; then
       modified_time=$(stat -c %Y "$file")
       current_time=$(date +%s)
@@ -12,7 +15,7 @@ while true; do
         # Transfer should have finished; move file
         filename=$(basename "$file")
         # File names should be "counting down", so they get sorted correctly in browser
-        new_filename="/var/www/html/files/$((3390263402 - $(date +%s)))_$filename"
+        new_filename="$((3390263402 - $(date +%s)))_$filename"
 
         # .goodnotes files
         if [[ $file == *.goodnotes ]]; then
@@ -44,14 +47,14 @@ while true; do
   done
 
   # Move old files (older than 20min) from final dir to archive dir
-  for file in /var/www/html/files/*; do
+  for file in *; do
     if [ -f "$file" ]; then
       modified_time=$(stat -c %Y "$file")
       current_time=$(date +%s)
       time_difference=$((current_time - modified_time))
 
       if [ $time_difference -gt 1200 ]; then
-        archive_dir="/var/www/html/files/archive"
+        archive_dir="archive"
         if [ ! -d "$archive_dir" ]; then
           mkdir -p "$archive_dir"
         fi
