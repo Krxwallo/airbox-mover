@@ -1,11 +1,12 @@
 #!/bin/bash
 
 source_dir="/var/mobile/Containers/Data/Application/EEF046E5-C9AA-426A-B9F0-13BAB981B259/Documents/Inbox"
+source_dir2="/var/mobile/Downloads/com.apple.AirDrop/"
 # dest directory = current directory !!!
 
 while true; do
   # Add number and move files to final dir
-  for file in "$source_dir"/*; do
+  for file in "$source_dir"/* "$source_dir2"/*/*/*; do
     if [ -f "$file" ]; then
       modified_time=$(stat -c %Y "$file")
       current_time=$(date +%s)
