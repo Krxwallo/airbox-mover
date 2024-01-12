@@ -15,12 +15,17 @@ while true; do
       if [ $time_difference -gt 1 ]; then
         # Transfer should have finished; move file
         filename=$(basename "$file")
+        # Fix file permissions
+        chmod a+rw "$file"
+        # Fix modified date, so that it doesn't instantly get moved to the archive
+        touch "$file"
         # File names should be "counting down", so they get sorted correctly in browser
         new_filename="$((3390263402 - $(date +%s)))_$filename"
 
         # .goodnotes files
         if [[ $file == *.goodnotes ]]; then
           echo "Found .goodnotes file: $file"
+          # TODO check if fit really is a zip file; if not don't extract attachments
           unzip -q "$file" -d temp_extracted
           attachments_dir="temp_extracted/attachments"
           if [ -d "$attachments_dir" ]; then
@@ -29,7 +34,7 @@ while true; do
               i=$((i+1))
               echo "Found attachment file $attachment_file ($i)"
               dest="$new_filename-attachment-$i.pdf"
-              cp $attachment_file $dest
+              cp "$attachment_file" "$dest"
               echo "Copied attachment file to $dest"
               #dest="$((new_filename))_attachment_$i.pdf"
               #echo "Copying attachment file $i: $attachment_file -> $dest"
